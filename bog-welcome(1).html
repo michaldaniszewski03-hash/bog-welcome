@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>hello, bog</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  html, body {
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+    background: #0f0f10;
+    color: #e8e6e1;
+    font-family: Georgia, "Times New Roman", serif;
+  }
+
+  /* each view is laid out at a fixed 460px width, then the script
+     scales it to fit whatever size the window is */
+  .view {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    width: 460px;
+    transform-origin: 50% 50%;
+    transform: translate(-50%, -50%);
+    transition: opacity 0.5s ease;
+  }
+  .hidden { display: none; }
+  .fade { opacity: 0; }
+
+  /* landing */
+  #landing { text-align: center; }
+  #open {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    font-family: inherit;
+    font-size: 56px;
+    color: #f5f3ee;
+    cursor: pointer;
+    transition: color 0.2s ease;
+  }
+  #open em { font-style: italic; color: #e8a33d; }
+  #open:hover { color: #ffffff; }
+  #open:hover em { color: #f2b95c; }
+  #open:focus { outline: none; }
+  .hint {
+    margin: 18px 0 0 0;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    color: #8a8780;
+    animation: pulse 2.4s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 0.45; }
+    50% { opacity: 1; }
+  }
+
+  /* message */
+  .label {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    color: #8a8780;
+    margin: 0 0 24px 0;
+  }
+  h1 {
+    font-weight: normal;
+    font-size: 44px;
+    line-height: 1.1;
+    margin: 0 0 24px 0;
+    color: #f5f3ee;
+  }
+  h1 em { font-style: italic; color: #e8a33d; }
+  p.body {
+    font-size: 18px;
+    line-height: 1.6;
+    margin: 0 0 16px 0;
+    color: #bdbab3;
+  }
+  .sig {
+    margin: 28px 0 0 0;
+    padding-top: 18px;
+    border-top: 1px solid #2a2a2c;
+    font-style: italic;
+    color: #8a8780;
+  }
+  [contenteditable]:focus { outline: none; }
+</style>
+</head>
+<body>
+
+<div class="view" id="landing">
+  <button id="open" type="button">hello, <em>bog</em></button>
+  <p class="hint">click to open</p>
+</div>
+
+<div class="view hidden fade" id="message">
+  <p class="label" contenteditable="true">fl studio project</p>
+  <h1 contenteditable="true">welcome, <em>bog.</em></h1>
+  <p class="body" contenteditable="true">glad you're here. this project is yours to mess with, so open anything, move anything, and change whatever you want.</p>
+  <p class="body" contenteditable="true">nothing in here is precious. if you break it, that's probably a good sign.</p>
+  <p class="sig" contenteditable="true">your loyal fan (michael)</p>
+</div>
+
+<script>
+  var landing = document.getElementById("landing");
+  var message = document.getElementById("message");
+  var current = landing;
+
+  // scale the visible view so it always fits the window, any shape or size
+  function fit() {
+    var w = window.innerWidth || document.documentElement.clientWidth;
+    var h = window.innerHeight || document.documentElement.clientHeight;
+    if (!w || !h) return;
+    var margin = Math.min(w, h) * 0.07;
+    var vw = current.offsetWidth;
+    var vh = current.offsetHeight;
+    if (!vw || !vh) return;
+    var s = Math.min((w - margin * 2) / vw, (h - margin * 2) / vh);
+    current.style.transform = "translate(-50%, -50%) scale(" + s + ")";
+  }
+
+  window.addEventListener("resize", fit);
+  message.addEventListener("input", fit);
+
+  document.getElementById("open").onclick = function () {
+    landing.className = "view fade";
+    setTimeout(function () {
+      landing.className = "view hidden";
+      current = message;
+      message.className = "view fade";
+      fit();
+      setTimeout(function () { message.className = "view"; }, 30);
+    }, 450);
+  };
+
+  fit();
+  setTimeout(fit, 100);
+</script>
+</body>
+</html>
